@@ -25,10 +25,10 @@
 ###Call back
 
 ```objc
-    self.ratingView.progressDidChangedByUser = ^(CGFloat progress){
+ratingView.progressDidChangedByUser = ^(CGFloat progress){
         
-        // to do something.
-    };
+    // to do something.
+};
 ```
 
 ###Update
