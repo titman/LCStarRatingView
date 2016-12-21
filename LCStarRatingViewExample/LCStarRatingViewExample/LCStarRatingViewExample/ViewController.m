@@ -28,9 +28,12 @@
     
     [self.view addSubview:self.ratingView];
     
+    __weak ViewController * vc = self;
+    
     self.ratingView.progressDidChangedByUser = ^(CGFloat progress){
         
         NSLog(@"progressDidChangedByUser : %@", @(progress));
+        vc.slider.value = progress;
     };
 }
 
