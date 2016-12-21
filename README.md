@@ -6,6 +6,16 @@
 > * No images.
 > * It supports multiple UI Setting.
 > * It supports gestures and call back block.
+> * It supports counting type switch.
+
+###Counting type
+```objc
+/**
+ * LCStarRatingViewCountingTypeInteger [0, 1, 2, 3, 4, 5]
+ * LCStarRatingViewCountingTypeFloat [0, 0.1, ... 0.4, ... 1, 1.1, ... 4.9, 5]
+ * LCStarRatingViewCountingTypeHalfCutting [0, 0.5, 1, 1.5, 2, ...]
+ */
+```
 
 ###Preview (GIF)
 -
