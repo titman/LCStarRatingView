@@ -290,8 +290,8 @@
     
     self.progress = progress;
     
-    if (self.progressChangedByUser) {
-        self.progressChangedByUser(self.progress);
+    if (self.progressDidChangedByUser) {
+        self.progressDidChangedByUser(self.progress);
     }
 }
 
@@ -303,8 +303,8 @@
 
     self.progress = progress;
     
-    if (self.progressChangedByUser) {
-        self.progressChangedByUser(self.progress);
+    if (self.progressDidChangedByUser) {
+        self.progressDidChangedByUser(self.progress);
     }
 }
 
@@ -468,7 +468,7 @@
         case LCStarRatingViewCountingTypeInteger:
             progress = roundf(progress);
             break;
-        case LCStarRatingViewCountingTypeDecimal:
+        case LCStarRatingViewCountingTypeFloat:
             break;
         case LCStarRatingViewCountingTypeHalfCutting:
             

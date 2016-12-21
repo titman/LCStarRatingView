@@ -27,6 +27,11 @@
     self.ratingView.frame = CGRectMake(100, 100, 200, 200);
     
     [self.view addSubview:self.ratingView];
+    
+    self.ratingView.progressDidChangedByUser = ^(CGFloat progress){
+        
+        NSLog(@"progressDidChangedByUser : %@", @(progress));
+    };
 }
 
 -(UIColor *) randomColor

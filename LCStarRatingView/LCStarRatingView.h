@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, LCStarRatingViewCountingType) {
     /**
      0.1 0.2 0.3 ... 1 1.1 ... 4.9 5
      */
-    LCStarRatingViewCountingTypeDecimal,
+    LCStarRatingViewCountingTypeFloat,
     /**
      0.5 1 1.5 2 2.5 3 3.5 ...
      */
@@ -60,7 +60,7 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
  Default is LCStarRatingViewCountingTypeInteger .
 
  * LCStarRatingViewCountingTypeInteger [0, 1, 2, 3, 4, 5]
- * LCStarRatingViewCountingTypeDecimal [0, 0.1, ... 0.4, ... 1, 1.1, ... 4.9, 5]
+ * LCStarRatingViewCountingTypeFloat [0, 0.1, ... 0.4, ... 1, 1.1, ... 4.9, 5]
  * LCStarRatingViewCountingTypeHalfCutting [0, 0.5, 1, 1.5, 2, ...]
  */
 @property(nonatomic, assign) LCStarRatingViewCountingType type;
@@ -127,6 +127,6 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
 /// @name Call back
 ///=============================================================================
 
-@property(nonatomic, copy) LCStarRatingViewProgressDidChanedByUser _Nullable progressChangedByUser;
+@property(nonatomic, copy) LCStarRatingViewProgressDidChanedByUser _Nullable progressDidChangedByUser;
 
 @end
