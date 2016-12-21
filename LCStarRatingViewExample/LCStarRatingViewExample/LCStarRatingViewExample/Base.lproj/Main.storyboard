@@ -109,7 +109,7 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <segments>
                                     <segment title="Integer"/>
-                                    <segment title="Decimal"/>
+                                    <segment title="Float"/>
                                     <segment title="HalfCutting"/>
                                 </segments>
                                 <connections>
