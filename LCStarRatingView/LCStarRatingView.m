@@ -330,7 +330,7 @@
     for (NSInteger i = 0; i < 5; i++) {
         
         __LCStar * star = [[__LCStar alloc] init];
-        star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.width);
+        star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.height);
         star.starColor = self.starPlaceHolderColor;
         star.starBorderColor = self.starPlaceHolderBorderColor;
         star.starBorderWidth = self.starPlaceHolderBorderWidth;
@@ -348,7 +348,7 @@
     for (NSInteger i = 0; i < 5; i++) {
         
         __LCStar * star = [[__LCStar alloc] init];
-        star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.width);
+        star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.height);
         star.starColor = self.starColor;
         star.starBorderColor = self.starBorderColor;
         star.starBorderWidth = self.starBorderWidth;
