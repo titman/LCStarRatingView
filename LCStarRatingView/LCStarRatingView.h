@@ -32,6 +32,9 @@
 
 #import <UIKit/UIKit.h>
 
+/**
+ * Enumerations to specify rating value type.
+ */
 typedef NS_ENUM(NSInteger, LCStarRatingViewCountingType) {
     
     /**
@@ -47,14 +50,38 @@ typedef NS_ENUM(NSInteger, LCStarRatingViewCountingType) {
      */
     LCStarRatingViewCountingTypeHalfCutting,
 };
+/**
+ *  proceeding callback typedefine
+ */
+typedef void(^LCStarRatingViewProgressDidChangedByUser)(CGFloat progress);
+/// Class pre-declaration.
+@class LCStarRatingView;
+/**
+ *  Delegate for LCStarRatingView
+ */
+@protocol LCStarRatingViewDelegate <NSObject>
+@optional
+/**
+ *  Called on star rating view's progress changed by user.
+ *
+ *  @param starRatingView LCStarRatingView
+ *  @param progress       CGFloat progress
+ */
+-(void) LCStarRatingView:(nonnull LCStarRatingView *) starRatingView progressDidChangedByUser:(CGFloat) progress;
 
-typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
+@end
 
+/**
+ *  Star Rating View
+ *  You can touch and drag to rate for things.
+ */
 @interface LCStarRatingView : UIView
+/**
+ *  delegate for LCStarRatingView
+ */
+@property(nonatomic, weak, nullable) id<LCStarRatingViewDelegate> delegate;
 
-///=============================================================================
-/// @name Configuring UI style
-///=============================================================================
+#pragma mark - Configuring UI style
 
 /**
  Default is LCStarRatingViewCountingTypeInteger .
@@ -66,45 +93,51 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
 @property(nonatomic, assign) LCStarRatingViewCountingType type;
 
 /**
+ The margin for starts
  Default is 5.0 .
  */
 @property(nonatomic, assign) CGFloat starMargin;
 
 /**
+ The highlighted star color for the rating stars
  Default is Yellow(255, 198, 0) .
  */
 @property(nullable, nonatomic, strong) UIColor * starColor;
 
 /**
+ Border color for highlighted stars
  Default is nil .
  */
 @property(nullable, nonatomic, strong) UIColor * starBorderColor;
 
 /**
+ Border width for star
  Default is 0 .
  */
 @property(nonatomic, assign) CGFloat starBorderWidth;
 
 /**
+ The darkened star color.
  Default is Light gray .
  */
 @property(nullable, nonatomic, strong) UIColor * starPlaceHolderColor;
 
 /**
+ The darkened star border color.
  Default is nil .
  */
 @property(nullable, nonatomic, strong) UIColor * starPlaceHolderBorderColor;
 
 /**
+ Border width for darkened stars.
  Default is 0 .
  */
 @property(nonatomic, assign) CGFloat starPlaceHolderBorderWidth;
 
-///=============================================================================
-/// @name Main attribute
-///=============================================================================
+#pragma mark - Main attribute
 
 /**
+ Current rating value
  Default 3. this value pinned to [0, 5].
  */
 @property(nonatomic, assign) CGFloat progress;
@@ -114,19 +147,10 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
  */
 @property(nonatomic, assign) BOOL enabled;
 
-
+#pragma mark - Call back
 /**
- Designated initializer.
+ *  Call back when progress changed by user.
  */
--(nonnull instancetype) init NS_DESIGNATED_INITIALIZER;
--(nonnull instancetype) initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;
--(nonnull instancetype) initWithCoder:(nullable NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
-
-
-///=============================================================================
-/// @name Call back
-///=============================================================================
-
-@property(nonatomic, copy) LCStarRatingViewProgressDidChanedByUser _Nullable progressDidChangedByUser;
+@property(nonatomic, copy) LCStarRatingViewProgressDidChangedByUser _Nullable progressDidChangedByUser;
 
 @end
