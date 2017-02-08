@@ -9,7 +9,7 @@
 #import "ViewController.h"
 #import "LCStarRatingView.h"
 
-@interface ViewController ()
+@interface ViewController ()<LCStarRatingViewDelegate>
 
 @property(nonatomic, strong) LCStarRatingView * ratingView;
 
@@ -25,6 +25,7 @@
 
     self.ratingView = [[LCStarRatingView alloc] init];
     self.ratingView.frame = CGRectMake(100, 100, 200, 200);
+    self.ratingView.delegate = self;
     
     [self.view addSubview:self.ratingView];
     
@@ -79,6 +80,10 @@
 -(IBAction)setType:(UISegmentedControl *)sender
 {
     self.ratingView.type = sender.selectedSegmentIndex;
+}
+
+-(void) LCStarRatingView:(LCStarRatingView *)starRatingView progressDidChangedByUser:(CGFloat)progress {
+    NSLog(@"Delegate output: %@", @(progress));
 }
 
 @end

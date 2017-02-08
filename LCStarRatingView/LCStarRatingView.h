@@ -60,7 +60,7 @@ typedef void(^LCStarRatingViewProgressDidChangedByUser)(CGFloat progress);
  *  Delegate for LCStarRatingView
  */
 @protocol LCStarRatingViewDelegate <NSObject>
-
+@optional
 /**
  *  Called on star rating view's progress changed by user.
  *
