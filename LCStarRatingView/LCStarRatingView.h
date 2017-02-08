@@ -147,31 +147,6 @@ typedef void(^LCStarRatingViewProgressDidChangedByUser)(CGFloat progress);
  */
 @property(nonatomic, assign) BOOL enabled;
 
-
-#pragma mark - Designated initializers.
-/**
- *  Create a star rating view
- *
- *  @return instance
- */
--(nonnull instancetype) init NS_DESIGNATED_INITIALIZER;
-/**
- *  Create a star rating view with specified frame
- *
- *  @param frame CGRect
- *
- *  @return instance
- */
--(nonnull instancetype) initWithFrame:(CGRect)frame NS_DESIGNATED_INITIALIZER;
-/**
- *  Create a star rating view from nib.
- *
- *  @param aDecoder NSCoder
- *
- *  @return instance
- */
--(nullable instancetype) initWithCoder:(nullable NSCoder *)aDecoder NS_DESIGNATED_INITIALIZER;
-
 #pragma mark - Call back
 /**
  *  Call back when progress changed by user.

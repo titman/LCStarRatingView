@@ -48,13 +48,6 @@
 
 @implementation __LCStar
 
--(instancetype) init {
-    if(self = [super initWithFrame:CGRectZero]) {
-        [self __LCStarInitSelf];
-    }
-    return self;
-}
-
 -(instancetype) initWithFrame:(CGRect)frame {
     if(self = [super initWithFrame:frame]) {
         [self __LCStarInitSelf];
