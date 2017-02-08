@@ -33,7 +33,7 @@
 #import "LCStarRatingView.h"
 
 
-
+#define SAFE_INVOKE(f, arg0)   do{if(f) { (f)(arg0); }}while(0)
 @interface __LCStar : UIView
 
 @property(nullable, nonatomic, strong) UIColor * starColor;
@@ -48,38 +48,28 @@
 
 @implementation __LCStar
 
--(instancetype) init
-{
-    if(self = [super initWithFrame:CGRectZero]){
-        
-        [self initSelf];
+-(instancetype) init {
+    if(self = [super initWithFrame:CGRectZero]) {
+        [self __LCStarInitSelf];
     }
-    
     return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame
-{
-    if(self = [super initWithFrame:frame]){
-        
-        [self initSelf];
+-(instancetype) initWithFrame:(CGRect)frame {
+    if(self = [super initWithFrame:frame]) {
+        [self __LCStarInitSelf];
     }
-    
     return self;
 }
 
--(instancetype) initWithCoder:(NSCoder *)aDecoder
-{
-    if(self = [super initWithCoder:aDecoder]){
-        
-        [self initSelf];
+-(instancetype) initWithCoder:(NSCoder *)aDecoder {
+    if(self = [super initWithCoder:aDecoder]) {
+        [self __LCStarInitSelf];
     }
-    
     return self;
 }
 
--(void) initSelf
-{
+-(void) __LCStarInitSelf {
     self.value           = 1;
     self.starColor       = [UIColor yellowColor];
     self.starBorderColor = [UIColor clearColor];
@@ -88,52 +78,43 @@
     self.opaque = NO;
 }
 
--(void) setValue:(CGFloat)value
-{
+-(void) setValue:(CGFloat)value {
     _value = value;
     
     [self setNeedsDisplay];
 }
 
--(void) setStarColor:(UIColor *)starColor
-{
+-(void) setStarColor:(UIColor *)starColor {
     _starColor = starColor;
     
     [self setNeedsDisplay];
 }
 
--(void) setStarBorderColor:(UIColor *)starBorderColor
-{
+-(void) setStarBorderColor:(UIColor *)starBorderColor {
     _starBorderColor = starBorderColor;
     
     [self setNeedsDisplay];
 }
 
--(void) setStarBorderWidth:(CGFloat)starBorderWidth
-{
+-(void) setStarBorderWidth:(CGFloat)starBorderWidth {
     _starBorderWidth = starBorderWidth;
     
     [self setNeedsDisplay];
 }
 
--(void) setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-    
+-(void) layoutSubviews {
+    [super layoutSubviews];
     [self setNeedsDisplay];
 }
 
--(void) setStarImage:(UIColor *)starImage
-{
+-(void) setStarImage:(UIColor *)starImage {
     _starImage = starImage;
     
     [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
+-(void)drawRect:(CGRect)rect {
     if (self.starImage) {
-        
         [super drawRect:rect];
         return;
     }
@@ -202,36 +183,32 @@
 
 @property(nullable, nonatomic, strong) UIImageView * progressImageView;
 @property(nullable, nonatomic, strong) UIImageView * backgroundImageView;
+/**
+ * start positions of stars
+ */
+@property(nonatomic, copy) NSArray<NSNumber*>* starPositionCache;
 
 @end
 
 @implementation LCStarRatingView
 
 #pragma mark - Designated initializer
-#pragma mark -
 
--(instancetype) init
-{
+-(instancetype) init {
     if(self = [super initWithFrame:CGRectZero]){
-        
         [self initSelf];
     }
-    
     return self;
 }
 
--(instancetype) initWithFrame:(CGRect)frame
-{
+-(instancetype) initWithFrame:(CGRect)frame {
     if(self = [super initWithFrame:frame]){
-        
         [self initSelf];
     }
-    
     return self;
 }
 
--(instancetype) initWithCoder:(NSCoder *)aDecoder
-{
+-(instancetype) initWithCoder:(NSCoder *)aDecoder {
     if(self = [super initWithCoder:aDecoder]){
         
         [self initSelf];
@@ -279,19 +256,54 @@
     [self loadStars];
 }
 
-#pragma mark - Action
-#pragma mark -
+#pragma mark - Actions
 
--(void) tapAction:(UITapGestureRecognizer *)tap
-{
+-(void) didUserChangeProgress {
+    SAFE_INVOKE(self.progressDidChangedByUser, self.progress);
+    if(self.delegate && [self.delegate respondsToSelector:@selector(LCStarRatingView:progressDidChangedByUser:)]) {
+        [self.delegate LCStarRatingView:self progressDidChangedByUser:self.progress];
+    }
+}
+/**
+ * calculate progress value for location in view
+ */
+-(CGFloat) progressForLocationInView:(CGPoint) location {
+    if(location.x < 0) {
+        return 0;
+    }
+    if(location.x > self.bounds.size.width) {
+        return 5;
+    }
+    // trim out star margin distance.
+    CGFloat totalWidth = self.bounds.size.width;
+    totalWidth -= 4 * self.starMargin;
+    double ratio = 5.0 / totalWidth;
+    // trim out star margin distance for location.
+    CGFloat touchX = location.x;
+    CGFloat lastStarX = self.bounds.size.width;
+    CGFloat starWidth = (self.frame.size.width - self.starMargin * 4) / 5;
+    for(NSInteger i = self.starPositionCache.count - 1; i >= 0; i--) {
+        CGFloat starPosition = [self.starPositionCache[i] doubleValue];
+        if(starPosition < location.x) {
+            lastStarX = starPosition + starWidth;
+            if(touchX > lastStarX) {
+                // when not touching the last star check whether user's touching margin
+                if(i + 1 < self.starPositionCache.count && touchX <= [self.starPositionCache[i + 1] doubleValue]) {
+                    touchX = lastStarX;
+                }
+            }
+            touchX -= i * self.starMargin;
+            break;
+        }
+    }
+    return ratio * touchX;
+}
+
+-(void) tapAction:(UITapGestureRecognizer *)tap {
     CGPoint tapPoint = [tap locationInView:self.backgroundImageView];
-
-    CGFloat progress = 5. / self.frame.size.width * tapPoint.x;
-    
-    self.progress = progress;
-    
-    if (self.progressDidChangedByUser) {
-        self.progressDidChangedByUser(self.progress);
+    self.progress = [self progressForLocationInView: tapPoint];
+    if(tapPoint.x >= 0 && tapPoint.x <= self.bounds.size.width) {
+        [self didUserChangeProgress];
     }
 }
 
@@ -299,23 +311,19 @@
 {
     CGPoint panPoint = [pan locationInView:self.backgroundImageView];
   
-    CGFloat progress = 5. / self.frame.size.width * panPoint.x;
-
-    self.progress = progress;
-    
-    if (self.progressDidChangedByUser) {
-        self.progressDidChangedByUser(self.progress);
+    self.progress = [self progressForLocationInView: panPoint];
+    // possible be negative on dragging
+    if(panPoint.x >= 0 && panPoint.x <= self.bounds.size.width) {
+        [self didUserChangeProgress];
     }
 }
 
--(void) loadStars
-{
+-(void) loadStars {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStars) object:nil];
     [self performSelector:@selector(loadStarsDelay) withObject:nil afterDelay:0];
 }
 
--(void) loadStarsDelay
-{
+-(void) loadStarsDelay {
     self.backgroundImageView.frame = self.bounds;
     self.progressImageView.frame   = self.bounds;
     self.progress = self.progress;
@@ -327,17 +335,19 @@
     backgroundCache.frame = self.bounds;
     
     // Background.
+    NSMutableArray* starPositionCache = [[NSMutableArray alloc] init];
     for (NSInteger i = 0; i < 5; i++) {
         
         __LCStar * star = [[__LCStar alloc] init];
         star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.height);
+        [starPositionCache addObject:@(CGRectGetMinX(star.frame))];
         star.starColor = self.starPlaceHolderColor;
         star.starBorderColor = self.starPlaceHolderBorderColor;
         star.starBorderWidth = self.starPlaceHolderBorderWidth;
         
         [backgroundCache addSubview:star];
     }
-    
+    self.starPositionCache = starPositionCache;
     self.backgroundImageView.image = [self convertViewToImage:backgroundCache];
     
     
@@ -348,7 +358,7 @@
     for (NSInteger i = 0; i < 5; i++) {
         
         __LCStar * star = [[__LCStar alloc] init];
-        star.frame = CGRectMake(starWidth * i + self.starMargin * i, 0, starWidth, self.frame.size.height);
+        star.frame = CGRectMake([starPositionCache[i] doubleValue], 0, starWidth, self.frame.size.height);
         star.starColor = self.starColor;
         star.starBorderColor = self.starBorderColor;
         star.starBorderWidth = self.starBorderWidth;
@@ -359,8 +369,7 @@
     self.progressImageView.image = [self convertViewToImage:starCache];
 }
 
--(UIImage *) convertViewToImage:(UIView *)view
-{
+-(UIImage *) convertViewToImage:(UIView *)view {
     UIGraphicsBeginImageContextWithOptions(view.frame.size, NO, [UIScreen mainScreen].scale);
     
     [view.layer renderInContext:UIGraphicsGetCurrentContext()];
@@ -374,15 +383,12 @@
 
 
 #pragma mark - Overwrite
-#pragma mark -
 
--(void) dealloc
-{
+-(void) dealloc {
     [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStars) object:nil];
 }
 
--(void) setEnabled:(BOOL)enabled
-{
+-(void) setEnabled:(BOOL)enabled {
     _enabled = enabled;
     
     for (UIGestureRecognizer * ges in self.backgroundImageView.gestureRecognizers) {
@@ -391,71 +397,60 @@
     }
 }
 
--(void) setStarMargin:(CGFloat)starMargin
-{
+-(void) setStarMargin:(CGFloat)starMargin {
     _starMargin = starMargin;
     
     [self loadStars];
 }
 
--(void) setStarColor:(UIColor *)starColor
-{
+-(void) setStarColor:(UIColor *)starColor {
     _starColor = starColor;
     
     [self loadStars];
 }
 
--(void) setStarBorderColor:(UIColor *)starBorderColor
-{
+-(void) setStarBorderColor:(UIColor *)starBorderColor {
     _starBorderColor = starBorderColor;
     
     [self loadStars];
 }
 
--(void) setStarBorderWidth:(CGFloat)starBorderWidth
-{
+-(void) setStarBorderWidth:(CGFloat)starBorderWidth {
     _starBorderWidth = starBorderWidth;
     
     [self loadStars];
 }
 
--(void) setStarPlaceHolderColor:(UIColor *)starPlaceHolderColor
-{
+-(void) setStarPlaceHolderColor:(UIColor *)starPlaceHolderColor {
     _starPlaceHolderColor = starPlaceHolderColor;
     
     [self loadStars];
 }
 
--(void) setStarPlaceHolderBorderColor:(UIColor *)starPlaceHolderBorderColor
-{
+-(void) setStarPlaceHolderBorderColor:(UIColor *)starPlaceHolderBorderColor {
     _starPlaceHolderBorderColor = starPlaceHolderBorderColor;
     
     [self loadStars];
 }
 
--(void) setStarPlaceHolderBorderWidth:(CGFloat)starPlaceHolderBorderWidth
-{
+-(void) setStarPlaceHolderBorderWidth:(CGFloat)starPlaceHolderBorderWidth {
     _starPlaceHolderBorderWidth = starPlaceHolderBorderWidth;
     
     [self loadStars];
 }
 
--(void) setFrame:(CGRect)frame
-{
-    [super setFrame:frame];
-    
+-(void) layoutSubviews {
+    [super layoutSubviews];
     [self loadStars];
 }
 
--(void) setType:(LCStarRatingViewCountingType)type
-{
+-(void) setType:(LCStarRatingViewCountingType)type {
     _type = type;
     
     self.progress = self.progress;
 }
 
--(void) setProgress:(CGFloat)progress
-{
+-(void) setProgress:(CGFloat)progress {
     if (progress > 5. || progress < 0) {
         
         NSLog(@"Progress could not greater than 5.0");
@@ -472,24 +467,27 @@
             break;
         case LCStarRatingViewCountingTypeHalfCutting:
             
-#define HALF_CUTTING(number) else if (progress > number && progress <= number + 0.5) progress = number + 0.25
-            if (progress <= 0.25) progress = 0;
-            HALF_CUTTING(0.25);
-            HALF_CUTTING(0.75);
-            HALF_CUTTING(1.25);
-            HALF_CUTTING(1.75);
-            HALF_CUTTING(2.25);
-            HALF_CUTTING(2.75);
-            HALF_CUTTING(3.25);
-            HALF_CUTTING(3.75);
-            HALF_CUTTING(4.25);
-            HALF_CUTTING(4.75);
+#define HALF_CUTTING(number) if (progress > number - 0.25 && progress <= number + 0.25) progress = number
+            for(NSInteger i = 0; i <= 10; i++) {
+                HALF_CUTTING(i * 0.5);
+            }
             break;
     }
     
     _progress = progress;
-    
-    self.progressImageView.frame = CGRectMake(0, 0, self.frame.size.width / 5. * self.progress, self.frame.size.height);
+    CGFloat maskViewWidth = self.bounds.size.width;
+    // trim out star margin distance.
+    CGFloat totalWidth = self.bounds.size.width;
+    totalWidth -= 4 * self.starMargin;
+    CGFloat ratio = totalWidth / 5.0;
+    for(NSInteger i = 4; i >= 0; i--) {
+        CGFloat starPosition = [self.starPositionCache[i] doubleValue];
+        if(progress >= i) {
+            maskViewWidth = starPosition + ratio * (progress - i);
+            break;
+        }
+    }
+    self.progressImageView.frame = CGRectMake(0, 0, maskViewWidth, self.frame.size.height);
 }
 
 
