@@ -18,9 +18,9 @@ Counting type
 ```
 
 Preview (GIF)
--
+
 ![image](https://github.com/titman/Pictures-of-the-warehouse/blob/master/LCStarRatingView1.gif?raw=false)
--
+
 
 Call back
 
