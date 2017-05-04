@@ -55,6 +55,7 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
 ///=============================================================================
 /// @name Configuring UI style
 ///=============================================================================
+IB_DESIGNABLE
 
 /**
  Default is LCStarRatingViewCountingTypeInteger .
@@ -68,37 +69,37 @@ typedef void(^LCStarRatingViewProgressDidChanedByUser)(CGFloat progress);
 /**
  Default is 5.0 .
  */
-@property(nonatomic, assign) CGFloat starMargin;
+@property(nonatomic, assign) IBInspectable CGFloat starMargin;
 
 /**
  Default is Yellow(255, 198, 0) .
  */
-@property(nullable, nonatomic, strong) UIColor * starColor;
+@property(nullable, nonatomic, strong) IBInspectable UIColor * starColor;
 
 /**
  Default is nil .
  */
-@property(nullable, nonatomic, strong) UIColor * starBorderColor;
+@property(nullable, nonatomic, strong) IBInspectable UIColor * starBorderColor;
 
 /**
  Default is 0 .
  */
-@property(nonatomic, assign) CGFloat starBorderWidth;
+@property(nonatomic, assign) IBInspectable CGFloat starBorderWidth;
 
 /**
  Default is Light gray .
  */
-@property(nullable, nonatomic, strong) UIColor * starPlaceHolderColor;
+@property(nullable, nonatomic, strong) IBInspectable UIColor * starPlaceHolderColor;
 
 /**
  Default is nil .
  */
-@property(nullable, nonatomic, strong) UIColor * starPlaceHolderBorderColor;
+@property(nullable, nonatomic, strong) IBInspectable UIColor * starPlaceHolderBorderColor;
 
 /**
  Default is 0 .
  */
-@property(nonatomic, assign) CGFloat starPlaceHolderBorderWidth;
+@property(nonatomic, assign) IBInspectable CGFloat starPlaceHolderBorderWidth;
 
 ///=============================================================================
 /// @name Main attribute

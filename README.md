@@ -1,14 +1,14 @@
-##LCStarRatingView 
+LCStarRatingView 
 
 ![badge-pod] ![badge-languages] ![badge-platforms] ![badge-mit]
 
-###Features
+Features
 > * No images.
 > * It supports multiple UI Setting.
 > * It supports gestures and call back block.
 > * It supports counting type switch.
 
-###Counting type
+Counting type
 ```objc
 /**
  * LCStarRatingViewCountingTypeInteger [0, 1, 2, 3, 4, 5]
@@ -17,12 +17,12 @@
  */
 ```
 
-###Preview (GIF)
+Preview (GIF)
 -
 ![image](https://github.com/titman/Pictures-of-the-warehouse/blob/master/LCStarRatingView1.gif?raw=false)
 -
 
-###Call back
+Call back
 
 ```objc
 ratingView.progressDidChangedByUser = ^(CGFloat progress){
@@ -31,8 +31,9 @@ ratingView.progressDidChangedByUser = ^(CGFloat progress){
 };
 ```
 
-###Update
-
+Update
+ - 1.01
+    * Fix bugs and supports XIB.
  - 1.0
     * First commit.
 

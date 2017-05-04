@@ -11,7 +11,7 @@
 
 @interface ViewController ()
 
-@property(nonatomic, strong) LCStarRatingView * ratingView;
+@property(nonatomic, strong) IBOutlet LCStarRatingView * ratingView;
 
 @end
 
@@ -23,10 +23,12 @@
     
     self.slider.continuous = NO;
 
-    self.ratingView = [[LCStarRatingView alloc] init];
-    self.ratingView.frame = CGRectMake(100, 100, 200, 200);
     
-    [self.view addSubview:self.ratingView];
+//    self.ratingView = [[LCStarRatingView alloc] init];
+//    self.ratingView.frame = CGRectMake(100, 100, 200, 200);
+//    
+//    [self.view addSubview:self.ratingView];
+
     
     __weak ViewController * vc = self;
     
