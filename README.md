@@ -7,6 +7,7 @@ Features
 > * It supports multiple UI Setting.
 > * It supports gestures and call back block.
 > * It supports counting type switch.
+> * It supports XIB.
 
 Counting type
 ```objc
