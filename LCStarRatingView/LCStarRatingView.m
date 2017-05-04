@@ -310,7 +310,7 @@
 
 -(void) loadStars
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStars) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStarsDelay) object:nil];
     [self performSelector:@selector(loadStarsDelay) withObject:nil afterDelay:0];
 }
 
@@ -378,7 +378,14 @@
 
 -(void) dealloc
 {
-    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStars) object:nil];
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStarsDelay) object:nil];
+}
+
+-(void) removeFromSuperview
+{
+    [NSObject cancelPreviousPerformRequestsWithTarget:self selector:@selector(loadStarsDelay) object:nil];
+
+    [super removeFromSuperview];    
 }
 
 -(void) setEnabled:(BOOL)enabled
